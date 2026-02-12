@@ -1,0 +1,9 @@
+# IDE specific files (JetBrains)
+.idea/
+
+# Build output
+/cmake-build-debug/
+/cmake-build-release/
+
+# Application-generated data
+/data/
