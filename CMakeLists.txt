@@ -3,5 +3,5 @@ project(LabProgrammazioneC__)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(LabProgrammazioneC__ main.cpp Activity.cpp)
+add_executable(LabProgrammazioneC__ main.cpp Activity.cpp TodoList.cpp)
 add_executable(run_tests tests/TodoListTests.cpp)
