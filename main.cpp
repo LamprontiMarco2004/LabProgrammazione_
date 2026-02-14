@@ -1,18 +1,49 @@
 #include <iostream>
-
+#include "TodoList.h"
+#include <fstream>
 // TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 int main()
 {
-    // TIP Press <shortcut actionId="RenameElement"/> when your caret is at the <b>lang</b> variable name to see how CLion can help you rename it.
-    auto lang = "C++";
-    std::cout << "Hello and welcome to " << lang << "!\n";
+    // reset della lista (cancella il contenuto del file)
+    std::ofstream("data/activities.txt", std::ios::trunc);
+    TodoList myList;
+    myList.loadFromFile("data/activities.txt");
 
-    for (int i = 1; i <= 5; i++)
-    {
-        // TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-        std::cout << "i = " << i << std::endl;
+
+    // Caricamento da file (se esiste)
+    myList.loadFromFile("data/activities.txt");
+
+    std::cout << "Attivita' iniziali: " << std::endl;
+    myList.showActivities();
+
+    // Aggiunta di nuove attività
+    std::cout << " Aggiungo alcune attivita'" << std::endl;
+    myList.addActivity("Studiare C++");
+    myList.addActivity("Fare esercizi");
+    myList.addActivity("Allenamento");
+
+    std::cout << " Dopo l'aggiunta: " << std::endl;
+    myList.showActivities();
+
+    // Completa un'attività (esempio ID = 2)
+    int idToComplete = 2;
+    std::cout << " Segno come completata l'attivita' con ID "
+              << idToComplete << "..." << std::endl;
+
+    if (myList.completeActivity(idToComplete)) {
+        std::cout << "Attivita' completata con successo!" << std::endl;
+    } else {
+        std::cout << "ID non trovato." << std::endl;
     }
 
+    std::cout << " Stato aggiornato " << std::endl;
+    myList.showActivities();
+
+    // Salvataggio su file
+    myList.saveToFile("data/activities.txt");
+    std::cout << " Dati salvati su file." << std::endl;
+
     return 0;
-    // TIP See CLion help at <a href="https://www.jetbrains.com/help/clion/">jetbrains.com/help/clion/</a>. Also, you can try interactive lessons for CLion by selecting 'Help | Learn IDE Features' from the main menu.
-}
+    }
+
+
