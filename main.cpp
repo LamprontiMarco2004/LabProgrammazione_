@@ -1,49 +1,86 @@
 #include <iostream>
+#include <string>
 #include "TodoList.h"
-#include <fstream>
-// TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-int main()
-{
-    // reset della lista (cancella il contenuto del file)
-    std::ofstream("data/activities.txt", std::ios::trunc);
-    TodoList myList;
-    myList.loadFromFile("data/activities.txt");
 
+void printMenu() {
+    std::cout << "\n--- To-Do List ---" << std::endl;
+    std::cout << "1. Visualizza attivita'" << std::endl;
+    std::cout << "2. Aggiungi attivita'" << std::endl;
+    std::cout << "3. Segna attivita' come completata" << std::endl;
+    std::cout << "4. Esci" << std::endl;
+    std::cout << "Scegli un'opzione: ";
+}
 
-    // Caricamento da file (se esiste)
-    myList.loadFromFile("data/activities.txt");
+int main() {
+    const std::string filename = "data/activities.txt";
+    TodoList list;
 
-    std::cout << "Attivita' iniziali: " << std::endl;
-    myList.showActivities();
+    // Caricamento dati all'avvio
+    list.loadFromFile(filename);
 
-    // Aggiunta di nuove attività
-    std::cout << " Aggiungo alcune attivita'" << std::endl;
-    myList.addActivity("Studiare C++");
-    myList.addActivity("Fare esercizi");
-    myList.addActivity("Allenamento");
+    std::string inputLine;
+    int choice = 0;
 
-    std::cout << " Dopo l'aggiunta: " << std::endl;
-    myList.showActivities();
+    do {
+        printMenu();
 
-    // Completa un'attività (esempio ID = 2)
-    int idToComplete = 2;
-    std::cout << " Segno come completata l'attivita' con ID "
-              << idToComplete << "..." << std::endl;
+        std::getline(std::cin, inputLine);
 
-    if (myList.completeActivity(idToComplete)) {
-        std::cout << "Attivita' completata con successo!" << std::endl;
-    } else {
-        std::cout << "ID non trovato." << std::endl;
-    }
+        try {
+            choice = std::stoi(inputLine);
+        } catch (const std::exception&) {
+            choice = -1; // Scelta non valida per default
+        }
 
-    std::cout << " Stato aggiornato " << std::endl;
-    myList.showActivities();
+        switch (choice) {
+            case 1:
+                std::cout << "\n";
+                list.showActivities();
+                break;
 
-    // Salvataggio su file
-    myList.saveToFile("data/activities.txt");
-    std::cout << " Dati salvati su file." << std::endl;
+            case 2: {
+                std::cout << "Inserisci la descrizione della nuova attivita': ";
+                std::string description;
+                std::getline(std::cin, description);
 
+                if (!description.empty()) {
+                    list.addActivity(description);
+                } else {
+                    std::cout << "La descrizione non puo' essere vuota." << std::endl;
+                }
+                break;
+            }
+
+            case 3: {
+                std::cout << "Inserisci l'ID dell'attivita' da completare: ";
+                std::getline(std::cin, inputLine);
+
+                try {
+                    int id = std::stoi(inputLine);
+                    if (list.completeActivity(id)) {
+                        std::cout << "Attivita' segnata come completata." << std::endl;
+                    } else {
+                        std::cout << "ID non trovato." << std::endl;
+                    }
+                } catch (const std::exception&) {
+                    std::cout << "Input non valido. Inserisci un ID numerico." << std::endl;
+                }
+                break;
+            }
+
+            case 4:
+                std::cout << "Salvataggio e chiusura in corso..." << std::endl;
+                break;
+
+            default:
+                std::cout << "Scelta non valida. Riprova." << std::endl;
+        }
+
+    } while (choice != 4);
+
+    // Salvataggio dati alla chiusura
+    list.saveToFile(filename);
+
+    std::cout << "Arrivederci!" << std::endl;
     return 0;
-    }
-
-
+}
